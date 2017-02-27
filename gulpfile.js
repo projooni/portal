@@ -29,6 +29,14 @@ gulp.task('build_js', function () {
         .pipe(concat('script.js'))
         .pipe(uglify())
         .pipe(gulp.dest(dist + '/js'));
+
+    // pump([
+    //         gulp.src(paths.js),
+    //         uglify(),
+    //         gulp.dest(dist + '/js')
+    //     ]
+    // );
+
 });
 gulp.task('build_html', function () {
     console.log('build_html...');
@@ -50,7 +58,7 @@ gulp.task('serve', function () {
     gulp.src(dist+'/').pipe(webserver({
         liverelod: true,
         open: true,
-        port: 8888
+        port: 7001
     }));
 
 });
