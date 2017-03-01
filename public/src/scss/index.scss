@@ -1,3 +1,77 @@
-h3{
-  background-color: blue;
+html,body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: '나눔고딕', 'arial', '돋움';
+  color: #fff;
+
+  ul{
+    margin: 0;
+  }
+}
+
+body{
+  background-color: #000;
+}
+
+.header{
+  height: 50px;
+  width: 100%;
+  min-width: 382px;
+  border-bottom: 1px solid #aaaaaa;
+
+  .title{
+    font-weight: bold;
+    font-size: 36px;
+    margin-right: 20px;
+    position: relative;
+    a{
+      text-decoration: none;
+      color: #0000dd;
+      &:hover{
+        color: #0000ff;
+      }
+    }
+    &:after{
+      content: '';
+      position: absolute;
+      top: 19px;
+      bottom: 6px;
+      right: -16px;
+      width: 2px;
+      background-color: #fff;
+    }
+  }
+  .gnb{
+    padding: 0;
+    list-style: none;
+    text-align: left;
+    display: inline-block;
+
+    li{
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 20px;
+      height: 50px;
+      line-height: 50px;
+      font-weight: bold;
+      a{
+        text-decoration: none;
+        color: #aaaaaa;
+        &.active{
+          color: #fff;
+        }
+        &:hover{
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+.contents{
+  padding: 20px;
+  width: 1000px;
+  //min-width: 382px;
+  background-color: #aaaaaa;
+  margin: 0 auto;
 }
