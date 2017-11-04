@@ -8,8 +8,8 @@ var sass = require('gulp-sass');
 var livereload = require('gulp-livereload');
 var stripDebug = require('gulp-strip-debug');
 
-var src = 'public/src';
-var dist = 'public/dist';
+var src = 'src';
+var dist = 'dist';
 
 var paths = {
     js: src + '/js/*.js',
