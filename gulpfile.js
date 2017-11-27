@@ -7,46 +7,89 @@ var minifyhtml = require('gulp-minify-html');
 var sass = require('gulp-sass');
 var livereload = require('gulp-livereload');
 var stripDebug = require('gulp-strip-debug');
+var browserSync = require('browser-sync').create();
 
-var src = 'src';
-var dist = 'dist';
-
-var paths = {
-    js: src + '/js/*.js',
-    scss: src + '/scss/*.scss',
-    html: src + '/**/*.html'
+var path = {
+    src: {
+        root: 'src/',
+        doc: 'src/doc/',
+        scss: 'src/scss'
+    },
+    dist: {
+        root : 'dist/',
+        doc : 'dist/doc/'
+    }
 };
 
-gulp.task('build_sass', function () {
+var config = {
+    pathRoot : path.src,
+    port : 3001
+};
+
+var scssOptions = {
+    /** * outputStyle (Type : String , Default : nested) * CSS의 컴파일 결과 코드스타일 지정 * Values : nested, expanded, compact, compressed */
+    outputStyle : 'expanded',
+    /** * indentType (>= v3.0.0 , Type : String , Default : space) * 컴파일 된 CSS의 "들여쓰기" 의 타입 * Values : space , tab */
+    indentType : "tab",
+    /** * indentWidth (>= v3.0.0, Type : Integer , Default : 2) * 컴파일 된 CSS의 "들여쓰기" 의 갯수 */
+    indentWidth : 1,
+    /** * precision (Type : Integer , Default : 5) * 컴파일 된 CSS 의 소수점 자리수. */
+    precision: 6,
+    /** * sourceComments (Type : Boolean , Default : false) * 컴파일 된 CSS 에 원본소스의 위치와 줄수 주석표시. */
+    sourceComments: true
+};
+
+gulp.task('copy-html', function(){
+
+    // index.html 복사
+    gulp.src([path.src.root + '*.html'])
+        .pipe(gulp.dest(path.dist.root))
+        .pipe(browserSync.stream());
+
+    // Doc html 복사
+    gulp.src([path.src.doc + '**/*.html'])
+        .pipe(gulp.dest(path.dist.doc))
+        .pipe(browserSync.stream());
+
+});
+
+gulp.task('build-sass', function () {
     console.log('build_sass...');
-    return gulp.src(paths.scss)
-        .pipe(sass())
-        .pipe(gulp.dest(dist + '/css'))
+    return gulp.src([path.src.doc + 'sass/**/*.scss'])
+        // 소스맵 초기화
+        .pipe(sourcemaps.init())
+        // scss 함수에 옵션값을 설정, scss 작성시 watch가 멈추지 않도록 logError를 설정
+        .pipe(scss(scssOptions).on('error', scss.logError))
+        // .pipe(rename(''))
+        // 소스맵 사용
+        .pipe(sourcemaps.write())
+        // 코드 난독화
+        // .pipe(uglify())
+        // dest 설정
+        .pipe(gulp.dest(path.dist.doc + 'css/'))
+        .pipe(browserSync.stream());
 });
-gulp.task('build_js', function () {
+
+gulp.task('build-js', function () {
     console.log('build_js...');
-    return gulp.src(paths.js)
-        .pipe(concat('script.js'))
-        .pipe(uglify())
-        .pipe(gulp.dest(dist + '/js'));
-
-    // pump([
-    //         gulp.src(paths.js),
-    //         uglify(),
-    //         gulp.dest(dist + '/js')
-    //     ]
-    // );
-
-});
-gulp.task('build_html', function () {
-    console.log('build_html...');
-    return gulp.src(paths.html)
-        .pipe(minifyhtml())
-        .pipe(gulp.dest(dist + '/'))
+    return gulp.src([path.src.doc + '**/*.js'])
+        // stripDebug : 모든 console.log, alert 제거
+        // .pipe(stripDebug())
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['es2015','react']
+        }))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest(path.dist.doc))
+        .pipe(browserSync.stream());
 });
 
-gulp.task('build_development', ['build_sass', 'build_js', 'build_html'], function () {
-    console.log('build_development [build_sass -> build_js -> build_html]...');
+
+// copy images
+gulp.task('copy-img', function(){
+    gulp.src([path.src.doc + 'img/**/*'])
+        .pipe(gulp.dist(path.dist.doc + 'img'))
+        .pipe(browserSync.stream());
 });
 
 gulp.task('clean', function () {
@@ -55,24 +98,29 @@ gulp.task('clean', function () {
 
 gulp.task('serve', function () {
     console.log('serve ...');
-    gulp.src(dist+'/').pipe(webserver({
-        liverelod: true,
-        open: true,
-        port: 7001
-    }));
+    browserSync.init({
+        server: {
+            baseDir: path.dist.root
+        },
+        port: config.port,
+        index : src.dist.doc + "html/index.html"
+    });
 
 });
 
 // 파일 변경 감지 및 브라우저 재시작
 gulp.task('watch', function () {
-    livereload.listen();
-    gulp.watch(paths.js, ['build_js']);
-    gulp.watch(paths.scss, ['build_sass']);
-    gulp.watch(paths.html, ['build_html']);
-    gulp.watch(dist + '/**').on('change', livereload.changed);
+    gulp.watch(path.src.root + '**/*.scss', ['build-sass']).on('change', browserSync.reload);
+    gulp.watch(path.src.root + '**/*.js', ['build-js']).on('change', browserSync.reload);
+    gulp.watch(path.src.root + '**/*.html', ['copy-html']).on('change', browserSync.reload);
+    // gulp.watch(path.src.root + 'img/**/*', ['copy-img']).on('change', browserSync.reload);
+    gulp.watch(path.src + '*.html', ['copy-html']).on('change', browserSync.reload)
 });
 
-gulp.task('default', ['clean', 'build_development', 'serve', 'watch'], function () {
-    console.log('default [clean -> build_development -> serve -> watch]');
+gulp.task('build',['copy-html', 'build-js', 'build-sass', 'copy-img'], function(){
+    console.log('build...');
+});
 
+gulp.task('default', ['clean', 'build', 'serve', 'watch'], function () {
+    console.log('default [clean -> build_development -> serve -> watch]');
 });

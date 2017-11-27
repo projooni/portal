@@ -192,7 +192,6 @@ gulp.task('server', function(){
         },
         port: config.port,
         index : "/index.html"
-
     });
 
 });
