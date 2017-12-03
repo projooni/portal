@@ -8,6 +8,9 @@ var sass = require('gulp-sass');
 var livereload = require('gulp-livereload');
 var stripDebug = require('gulp-strip-debug');
 var browserSync = require('browser-sync').create();
+var sourcemaps = require('gulp-sourcemaps');
+var babel = require('gulp-babel');
+var scss = require('gulp-sass');
 
 var path = {
     src: {
@@ -22,7 +25,7 @@ var path = {
 };
 
 var config = {
-    pathRoot : path.src,
+    pathRoot : path.dist.root,
     port : 3001
 };
 
@@ -88,7 +91,7 @@ gulp.task('build-js', function () {
 // copy images
 gulp.task('copy-img', function(){
     gulp.src([path.src.doc + 'img/**/*'])
-        .pipe(gulp.dist(path.dist.doc + 'img'))
+        .pipe(gulp.dest(path.dist.doc + 'img'))
         .pipe(browserSync.stream());
 });
 
@@ -99,11 +102,12 @@ gulp.task('clean', function () {
 gulp.task('serve', function () {
     console.log('serve ...');
     browserSync.init({
+        browser: ["chrome"],
         server: {
-            baseDir: path.dist.root
+            baseDir: path.dist.doc
         },
         port: config.port,
-        index : src.dist.doc + "html/index.html"
+        index : "html/index.html"
     });
 
 });
