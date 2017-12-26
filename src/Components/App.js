@@ -7,6 +7,7 @@ import Content from './Content';
 import StateExample from './StateExample';
 import RandomNumber from './RandomNumber';
 import update from 'react-addons-update';
+import Hello2 from './Hello2';
 
 class App extends React.Component {
 
@@ -48,9 +49,30 @@ class App extends React.Component {
                 <RandomNumber number={this.state.value}
                               onUpdate={this.updateValue} />
                 <Contacts/>
+                <Hello/>
+                <Hello2 name="이준석"/>
             </div>
         );
 
+    }
+}
+
+// DOM에 이름을 달아주자
+// callback을 이용해 this.input에 할당하는 방법
+// ref를 사용하기 전엔 언제나 이를 사용 하지 않고 해결 할 수 있는 방안이 있는지 고려해보세요 (최대한 안쓰는걸 권장)
+class Hello extends React.Component{
+    handleClick(){
+        this.input.value = "";
+        this.input.focus();
+    }
+
+    render(){
+        return(
+            <div>
+                <input ref={ref => this.input = ref}/>
+                <button onClick={this.handleClick.bind(this)}>Click Me</button>
+            </div>
+        )
     }
 }
 
