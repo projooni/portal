@@ -3,11 +3,15 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/App';
+import Root from './client/Root';
+import './index.css';
+// import App from './components/App';
+// import registerServiceWorker from './registerServiceWorker';
 
 const rootElement = document.getElementById('root');
 // ReactDOM.render(<App
 //     headerTitle="Welcome!"
 //     contentTitle="Stranger,"
 //     contentBody="Welcome to Example App!"/>, rootElement);
-ReactDOM.render(<App/>, rootElement);
+ReactDOM.render(<Root/>, rootElement);
+// registerServiceWorker();
