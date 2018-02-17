@@ -1,3 +1,13 @@
-.contents-wrap{
-  padding: 30px;
+.app-wrap{
+  height: 100%;
+
+  & .contents-wrap{
+    padding: 30px;
+    background-color: #C0C0C0;
+    border-radius: 20px;
+    margin: 2px;
+    min-height: 400px;
+  }
+
 }
+

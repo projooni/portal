@@ -11,7 +11,7 @@ import './App.scss';
 class App extends Component {
     render(){
         return(
-            <div>
+            <div className="app-wrap">
                 <Gnb/>
                 <section className="contents-wrap">
                     <Route exact path="/" component={Home}/>

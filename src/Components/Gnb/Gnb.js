@@ -18,7 +18,7 @@ const Gnb = () => {
     return(
         <div className="Gnb-gnb">
             <ul>
-                <li><NavLink exact to="/" className="gnb-home" activeStyle={activeStyle}>Home</NavLink></li>
+                <li><NavLink exact to="/" className="gnb-home" activeStyle={activeStyle}><img className="ico-screener" src="./img/ico-screener.svg" alt=""/><span>Screener</span></NavLink></li>
                 <li><NavLink exact to="/about" activeStyle={activeStyle}>About</NavLink></li>
                 <li><NavLink to="/about/foo" activeStyle={activeStyle}>Project</NavLink></li>
                 <li><NavLink to="/posts" activeStyle={activeStyle}>Contact</NavLink></li>
